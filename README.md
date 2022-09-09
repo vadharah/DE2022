@@ -1,2 +1,2 @@
-# DE2023
-DE 2023 Labs at JADS
+# DE2022
+DE 2022 Labs at JADS
