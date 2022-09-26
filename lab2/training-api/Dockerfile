@@ -6,7 +6,7 @@ WORKDIR /usr/src/myapp
 COPY requirements.txt .
 # Install required python packages
 RUN pip install --no-cache-dir -r requirements.txt
-# Copy all files in prediction-api local host directory to /usr/src/myapp in Docker container
+# Copy all files in training-api local host directory to /usr/src/myapp in Docker container
 COPY . .
 # Expose the port that our app runs in
 EXPOSE 5000
@@ -14,6 +14,7 @@ EXPOSE 5000
 ENV MODEL_REPO=/usr/src/myapp/models
 # Run our App
 CMD ["python3","app.py"]
+
 # We can also use an ENTRYPOINT and a CMD
 # Run our App
 #ENTRYPOINT ["python3"]
