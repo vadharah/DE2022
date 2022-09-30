@@ -1,8 +1,9 @@
 # importing Flask and other modules
-import json
 import os
+
+from flask import Flask, request, render_template, jsonify
+
 from diabetes_predictor import DiabetesPredictor
-from flask import Flask, request, render_template
 
 # Flask constructor
 app = Flask(__name__)
@@ -27,11 +28,13 @@ def check_diabetes():
         ]
         print(prediction_input)
         dp = DiabetesPredictor()
-        return dp.predict_single_record(prediction_input)
+        status = dp.predict_single_record(prediction_input)
+        # return the prediction outcome as a json message. 200 is HTTP status code 200, indicating successful completion
+        return jsonify({'result': str(status[0])}), 200
 
     return render_template(
         "user_form.html")  # this method is called of HTTP method is GET, e.g., when browsing the link
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(port=int(os.environ.get("PORT", 5000)), host='0.0.0.0', debug=True)
