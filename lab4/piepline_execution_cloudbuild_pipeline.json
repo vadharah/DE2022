@@ -9,7 +9,7 @@
         ]
    },
    {
-       "name": "gcr.io/$PROJECT_ID/pipline_executor",
+       "name": "gcr.io/$PROJECT_ID/pipline_executor:0.0.1",
        "args": [
            "--name=diabetes-predictor-pipeline",           
 		   "--pipeline_def=./lab4/diabetes_prdictor_training_pipeline.json",
