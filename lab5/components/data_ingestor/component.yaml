@@ -9,11 +9,11 @@ inputs:
 
 outputs:
   - {name: feature_path, type: Data}
-  -
+
 # Definition of the component implementation
 implementation:
   container:
-    image: gcr.io/your_project_id/dataingestor:latest    # replace your_project_id with your project_id
+    image: gcr.io/your_project_id/dataingestor:0.0.1    # replace your_project_id with your project_id
     # command is a list of strings (command-line arguments).
     command: [
       python3,

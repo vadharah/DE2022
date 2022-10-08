@@ -14,7 +14,7 @@ outputs:
 
 implementation:
   container:
-    image: gcr.io/your_project_id/mlptrainer:latest  # replace your_project_id with your project_id
+    image: gcr.io/your_project_id/mlptrainer:0.0.1  # replace your_project_id with your project_id
     command: [
       python3,
       # Path of the program inside the container
