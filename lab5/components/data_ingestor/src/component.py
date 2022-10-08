@@ -1,9 +1,9 @@
 import argparse
 import logging
 import sys
+from pathlib import Path
 
 from google.cloud import storage
-from pathlib import Path
 
 
 def download_data(project_id, bucket, file_name, feature_path):
@@ -18,6 +18,7 @@ def download_data(project_id, bucket, file_name, feature_path):
     logging.info('Downloaded Data!')
 
 
+# Defining and parsing the command-line arguments
 def parse_command_line_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('--project_id', type=str, help="GCP project id")

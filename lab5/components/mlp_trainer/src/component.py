@@ -37,7 +37,7 @@ def train_mlp(project_id, feature_path, model_repo, metrics_path):
         "loss": scores[0],
     }
 
-    # Save the model localy
+    # Save the model locally
     local_file = '/tmp/local_model.h5'
     model.save(local_file)
     # Save to GCS as model.h5
@@ -54,6 +54,7 @@ def train_mlp(project_id, feature_path, model_repo, metrics_path):
     Path(metrics_path).parent.mkdir(parents=True, exist_ok=True)
     with open(metrics_path, 'w') as outfile:
         json.dump(metrics, outfile)
+
 
 # Defining and parsing the command-line arguments
 def parse_command_line_arguments():

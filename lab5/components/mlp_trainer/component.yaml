@@ -1,7 +1,7 @@
-# Defintion of the component metadata
+# Definition of the component metadata
 name: Train MLP
 description: Train MLP Model
-# Defintion of the component interface
+# Definition of the component interface
 inputs:
   - {name: project_id, type: String}
   - {name: model_repo, type: String}
@@ -10,7 +10,7 @@ inputs:
 outputs:
   - {name: metrics_path, type: Data}
   
-# Defintion of the component implementation
+# Definition of the component implementation
 
 implementation:
   container:
