@@ -11,8 +11,8 @@
    {
        "name": "gcr.io/$PROJECT_ID/pipline_executor:0.0.1",
        "args": [
-           "--name=diabetes-predictor-pipeline",           
-		   "--pipeline_def=./lab5/diabetes_prdictor_training_pipeline.json",
+           "--name=diabetes-predictor-mlp-pipeline",           
+		   "--pipeline_def=./lab5/diabetes_predictor_mlp_pipeline.json",
            "--pipeline_root=gs://de_jads_temp",         
 		   "--parameter_dict=./parameters_lab5.json"
         ]
