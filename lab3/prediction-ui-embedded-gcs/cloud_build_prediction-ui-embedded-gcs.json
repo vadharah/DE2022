@@ -3,8 +3,8 @@
 	{
        "name": "gcr.io/cloud-builders/gsutil",
        "args": [
-           "cp",           
-		   "gs://model_repo_de2022/model.h5",
+           "cp",
+		   "your GSC model file url, e.g, gs://model_repo_de2022/model.h5",
            "./lab3/prediction-ui-embedded-gcs"
         ]
     },
