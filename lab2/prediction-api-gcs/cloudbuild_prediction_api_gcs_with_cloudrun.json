@@ -22,7 +22,7 @@
       "args": [
         "run",
         "deploy",
-        "prediction-service",
+        "prediction-api",
         "--image",
         "gcr.io/$PROJECT_ID/prediction-api-gcs:0.0.1",
         "--region",
@@ -31,7 +31,10 @@
         "managed",
         "--allow-unauthenticated",
         "--update-env-vars",
-        "PROJECT_ID=$PROJECT_ID,MODEL_REPO=your_model_repo_bucket,MODEL_NAME=your_model_name"
+        "PROJECT_ID=$PROJECT_ID,MODEL_REPO=your_model_repo_bucket,MODEL_NAME=your_model_name",
+        "--no-cpu-throttling",
+        "--memory",
+        "4 GiB"
       ]
     }
   ]

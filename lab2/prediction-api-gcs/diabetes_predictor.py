@@ -21,6 +21,7 @@ class DiabetesPredictor:
         blob = bucket.blob(model_name)
         blob.download_to_filename('local_model.h5')
         self.model = load_model('local_model.h5')
+        return jsonify({'message': " the model was downloaded"}), 200
 
     def predict_single_record(self, prediction_input):
         print(prediction_input)
