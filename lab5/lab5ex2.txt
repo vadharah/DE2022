@@ -259,25 +259,24 @@ def upload_model_to_gcs(project_id: str, model_repo: str, model: Input[Model]):
     print("Saved the model to GCP bucket : " + model_repo)
 
 # Define the workflow of the pipeline.
-# Define the workflow of the pipeline.
 @kfp.dsl.pipeline(
     name="diabetes-prdictor-training-pipeline-lab5ex2")
 def pipeline(project_id: str, data_bucket: str, dataset_uri: str, model_repo: str, thresholds_dict_str:str):    
     
-#     dataset_op = kfp.dsl.importer(
-#         artifact_uri=dataset_uri,
-#         artifact_class=Dataset,
-#         reimport=False,
-#     )
-    
-    dataset_op = gcc_aip.TextDatasetCreateOp(
-        project=project_id,
-        display_name="diabetes",
-        gcs_source=dataset_uri,
-        import_schema_uri=aip.schema.dataset.ioformat.text.single_label_classification,
+    dataset_op = kfp.dsl.importer(
+        artifact_uri=dataset_uri,
+        artifact_class=Dataset,
+        reimport=False,
     )
+    
+    # dataset_op = gcc_aip.TextDatasetCreateOp(
+    #     project=project_id,
+    #     display_name="diabetes",
+    #     gcs_source=dataset_uri,
+    #     import_schema_uri=aip.schema.dataset.ioformat.text.single_label_classification,
+    # )
      
-    train_test_split_op = train_test_split(dataset_op.outputs["dataset"].ignore_type())
+    train_test_split_op = train_test_split(dataset_op.output)
         
     training_lr_job_run_op = train_lr(features=train_test_split_op.outputs["dataset_train"])
     
@@ -328,8 +327,7 @@ def pipeline(project_id: str, data_bucket: str, dataset_uri: str, model_repo: st
             dedicated_resources_min_replica_count=1,
             dedicated_resources_max_replica_count=1,
             traffic_split={"0": 100},
-        ).after(create_endpoint_op)              
-		
+        ).after(create_endpoint_op)      
 		
 from kfp.v2 import compiler
 compiler.Compiler().compile(pipeline_func=pipeline,
@@ -352,3 +350,72 @@ job = aip.PipelineJob(
 )
 
 job.run()
+
+DISPLAY_NAME = "diabetes-prediction-model"
+! gcloud ai models list --region={REGION} --filter={DISPLAY_NAME}
+
+
+ENDPOINT_NAME="diabetes-prediction-service"
+instance = [[1,126,60,0,0,30.1,0.349,47]]  # Prediciton request inputs 
+ENDPOINT_ID = !(gcloud ai endpoints list --region=$REGION \
+              --format='value(ENDPOINT_ID)'\
+              --filter=display_name=$ENDPOINT_NAME \
+              --sort-by=creationTimeStamp | tail -1)
+ENDPOINT_ID = ENDPOINT_ID[1]
+
+def endpoint_predict(
+    project: str, location: str, instances: list, endpoint: str
+):
+    aip.init(project=project, location=location)
+
+    endpoint = aip.Endpoint(endpoint)
+
+    prediction = endpoint.predict(instances=instances)
+    return prediction
+
+endpoint_predict(PROJECT_ID, REGION, instance, ENDPOINT_ID)
+
+# Define variables 
+job_display_name = "diabetes-prediction-batch-prediction-job"
+MODEL_NAME="diabetes-prediction-model"
+ENDPOINT_NAME="diabetes-prediction-service"
+BUCKET_URI="gs://data_de2022"
+input_file_name="test_set_batch_prediction.csv"
+
+# Get model id
+MODEL_ID=!(gcloud ai models list --region=$REGION \
+           --filter=display_name=$MODEL_NAME)
+MODEL_ID=MODEL_ID[2].split(" ")[0]
+
+model_resource_name = f'projects/{PROJECT_ID}/locations/{REGION}/models/{MODEL_ID}'
+gcs_source= [f"{BUCKET_URI}/{input_file_name}"]
+gcs_destination_prefix=f"{BUCKET_URI}/output"
+
+def batch_prediction_job(
+    project: str,
+    location: str,
+    model_resource_name: str,
+    job_display_name: str,
+    gcs_source: str,
+    gcs_destination_prefix: str,
+    machine_type: str,
+    starting_replica_count: int = 1, # The number of nodes for this batch prediction job. 
+    max_replica_count: int = 1,    
+):   
+    aip.init(project=project, location=location)
+
+    model = aip.Model(model_resource_name)
+
+    batch_prediction_job = model.batch_predict(
+        job_display_name=job_display_name,
+        instances_format='csv', #csv
+        gcs_source=[f"{BUCKET_URI}/{input_file_name}"],
+        gcs_destination_prefix=f"{BUCKET_URI}/output",
+        machine_type=machine_type, # must be present      
+    )
+    batch_prediction_job.wait()
+    print(batch_prediction_job.display_name)
+    print(batch_prediction_job.state)
+    return batch_prediction_job
+
+batch_prediction_job(PROJECT_ID, REGION, model_resource_name, job_display_name, gcs_source, gcs_destination_prefix, machine_type="n1-standard-2")
