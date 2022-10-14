@@ -186,8 +186,8 @@ job = aip.PipelineJob(
     pipeline_root=PIPELINE_ROOT,
     location=REGION,
     parameter_values={
-        'project_id': PROJECT_ID, # makesure to use your project id 
-        'region':REGION,
+        'project_id': PROJECT_ID, # makesure to use your project id,
+        'region': REGION,
         'data_bucket': 'data_de2022',  # makesure to use your data bucket name 
         'dataset_uri':'gs://data_de2022/training_set.csv',
         'model_repo':'model_repo_de2022', # makesure to use your model bucket name 
