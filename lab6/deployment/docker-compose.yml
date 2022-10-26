@@ -18,7 +18,8 @@ volumes:
       o: bind
 services:
   spark-driver-app:
-    build: jupyter-all-spark-notebook-gcp    # jupyter/all-spark-notebook with spark configurations for bigquery and gcs
+    build:
+      context: ./jupyter-all-spark-notebook-gcp    # jupyter/all-spark-notebook with spark configurations for bigquery and gcs
     container_name: spark-driver-app
     user: root
     ports:
@@ -31,7 +32,8 @@ services:
       - spark-data:/home/jovyan/data
       - spark-checkpoint:/home/jovyan/checkpoint
   spark-master:
-    build: ./spark-bitnami-python3.10
+    build:
+      context: ./spark-bitnami-python3.10
     container_name: spark-master
     user: root
     environment:
@@ -49,7 +51,8 @@ services:
       - spark-data:/home/jovyan/data
       - spark-checkpoint:/home/jovyan/checkpoint
   spark-worker-1:
-    build: ./spark-bitnami-python3.10
+    build:
+      context: ./spark-bitnami-python3.10
     container_name: spark-worker-1
     user: root
     depends_on:
@@ -69,7 +72,8 @@ services:
       - spark-data:/home/jovyan/data
       - spark-checkpoint:/home/jovyan/checkpoint
   spark-worker-2:
-    build: ./spark-bitnami-python3.10
+    build:
+      context: ./spark-bitnami-python3.10
     container_name: spark-worker-2
     user: root
     depends_on:
